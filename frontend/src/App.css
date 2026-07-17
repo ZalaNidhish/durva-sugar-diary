@@ -76,7 +76,7 @@ body {
 }
 
 .btn-add {
-  background: var(--pink-accent);
+  background: var(--pink-accent-dark);
   color: white;
   border: none;
   border-radius: 999px;
@@ -87,11 +87,6 @@ body {
   box-shadow: var(--shadow);
   transition: background 0.15s ease, transform 0.1s ease;
   white-space: nowrap;
-}
-
-.btn-add:hover {
-  background: var(--pink-accent-dark);
-  transform: translateY(-1px);
 }
 
 .selected-date-label {
@@ -338,7 +333,7 @@ body {
 }
 
 .btn-primary {
-  background: var(--pink-accent);
+  background: var(--pink-accent-dark);
   color: white;
   border: none;
   border-radius: 999px;
@@ -346,10 +341,6 @@ body {
   font-weight: 600;
   cursor: pointer;
   flex: 1;
-}
-
-.btn-primary:hover {
-  background: var(--pink-accent-dark);
 }
 
 .btn-primary:disabled {

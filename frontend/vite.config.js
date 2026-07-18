@@ -31,9 +31,6 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Entries fetched successfully get cached, so a day already viewed
-        // is still readable offline. Falls back to cache only if the
-        // network request fails or is slow (e.g. spotty signal).
         runtimeCaching: [
           {
             urlPattern: /\/api\/entries/,

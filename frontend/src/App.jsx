@@ -20,6 +20,7 @@ function formatDisplayDate(dateStr) {
 export default function App() {
   const [selectedDate, setSelectedDate] = useState(todayStr());
   const [entries, setEntries] = useState([]);
+  const [average, setAverage] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -30,6 +31,7 @@ export default function App() {
     try {
       const res = await getEntriesByDate(selectedDate);
       setEntries(res.data);
+      setAverage(res.average || null);
     } catch (err) {
       setError(err.message || 'Could not load entries.');
     } finally {
@@ -79,6 +81,16 @@ export default function App() {
       </div>
 
       <p className="selected-date-label">{formatDisplayDate(selectedDate)}</p>
+
+      {!loading && !error && average && (
+        <div className="daily-average">
+          <span className="daily-average-label">Average glucose</span>
+          <span className="daily-average-value">{average.avgGlucose} mg/dL</span>
+          <span className="daily-average-count">
+            {average.entryCount} reading{average.entryCount === 1 ? '' : 's'}
+          </span>
+        </div>
+      )}
 
       <main className="entry-list">
         {loading && <p className="status-text">Loading…</p>}

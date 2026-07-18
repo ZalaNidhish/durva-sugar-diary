@@ -3,6 +3,7 @@ const router = express.Router();
 const Entry = require('../models/Entry');
 const asyncHandler = require('../middleware/asyncHandler');
 const validateEntry = require('../middleware/validateEntry');
+const { updateDailySummary } = require('../utils/dailySummary');
 
 // GET /api/entries - all entries, newest day first
 router.get(
@@ -13,6 +14,7 @@ router.get(
   })
 );
 
+// GET /api/entries/day/:date - entries for one day + that day's stored average
 router.get(
   '/day/:date',
   asyncHandler(async (req, res) => {
@@ -31,7 +33,16 @@ router.get(
       time: 1,
     });
 
-    res.json({ success: true, data: entries });
+    // Keep the stored summary fresh, then hand it back alongside the entries.
+    const summary = await updateDailySummary(date);
+
+    res.json({
+      success: true,
+      data: entries,
+      average: summary
+        ? { avgGlucose: summary.avgGlucose, entryCount: summary.entryCount }
+        : null,
+    });
   })
 );
 
@@ -53,6 +64,7 @@ router.post(
   validateEntry,
   asyncHandler(async (req, res) => {
     const entry = await Entry.create(req.body);
+    await updateDailySummary(entry.date);
     res.status(201).json({ success: true, data: entry });
   })
 );
@@ -62,13 +74,24 @@ router.put(
   '/:id',
   validateEntry,
   asyncHandler(async (req, res) => {
+    const existing = await Entry.findById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ success: false, errors: ['Entry not found'] });
+    }
+    const oldDate = existing.date;
+
     const entry = await Entry.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!entry) {
-      return res.status(404).json({ success: false, errors: ['Entry not found'] });
+
+    // Refresh the summary for the entry's new day, and for its old day too
+    // in case the date field itself was changed.
+    await updateDailySummary(entry.date);
+    if (new Date(oldDate).toDateString() !== new Date(entry.date).toDateString()) {
+      await updateDailySummary(oldDate);
     }
+
     res.json({ success: true, data: entry });
   })
 );
@@ -81,6 +104,7 @@ router.delete(
     if (!entry) {
       return res.status(404).json({ success: false, errors: ['Entry not found'] });
     }
+    await updateDailySummary(entry.date);
     res.json({ success: true, data: {} });
   })
 );

@@ -96,6 +96,36 @@ body {
   color: var(--plum-text);
 }
 
+/* Daily average summary */
+.daily-average {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--pink-soft);
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.daily-average-label {
+  font-size: 0.85rem;
+  color: var(--plum-muted);
+}
+
+.daily-average-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--pink-accent-dark);
+}
+
+.daily-average-count {
+  font-size: 0.8rem;
+  color: var(--plum-muted);
+}
+
 /* Status text */
 .status-text {
   text-align: center;

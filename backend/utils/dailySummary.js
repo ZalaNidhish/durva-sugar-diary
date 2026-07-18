@@ -1,5 +1,5 @@
 const Entry = require('../models/Entry');
-const DailySummary = require('../models/DailySummary');
+const DailySummary = require('../models/DailySummary.js');
 
 function dayBounds(dateInput) {
   const start = new Date(dateInput);

@@ -12,19 +12,6 @@ async function handleResponse(res) {
   return body;
 }
 
-// dateStr is 'YYYY-MM-DD'. Returns every reading for that one day.
-export async function getDailyAnalysis(dateStr) {
-  const res = await fetch(`${API_URL}/analysis/daily/${dateStr}`);
-  return handleResponse(res);
-}
-
-// dateStr is any 'YYYY-MM-DD' date inside the desired week; the backend
-// resolves it to that week's Mon-Sun range.
-export async function getWeeklyAnalysis(dateStr) {
-  const res = await fetch(`${API_URL}/analysis/weekly/${dateStr}`);
-  return handleResponse(res);
-}
-
 export async function getEntriesByDate(dateStr) {
   const res = await fetch(`${API_URL}/day/${dateStr}`);
   return handleResponse(res);
@@ -50,5 +37,18 @@ export async function updateEntry(id, data) {
 
 export async function deleteEntry(id) {
   const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+  return handleResponse(res);
+}
+
+// dateStr is 'YYYY-MM-DD'. Returns every reading for that one day.
+export async function getDailyAnalysis(dateStr) {
+  const res = await fetch(`${API_URL}/analysis/daily/${dateStr}`);
+  return handleResponse(res);
+}
+
+// dateStr is any 'YYYY-MM-DD' date inside the desired week; the backend
+// resolves it to that week's Mon-Sun range.
+export async function getWeeklyAnalysis(dateStr) {
+  const res = await fetch(`${API_URL}/analysis/weekly/${dateStr}`);
   return handleResponse(res);
 }

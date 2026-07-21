@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 // A dependency-free line chart: points connected by a line, with a dot
 // marker at each data point. Deliberately not a bar chart.
-export default function GlucoseLineChart({ data }) {
+export default function GlucoseLineChart({ data, height = 300 }) {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const width = 640;
-  const height = 300;
   const padding = { top: 24, right: 20, bottom: 48, left: 48 };
   const innerW = width - padding.left - padding.right;
   const innerH = height - padding.top - padding.bottom;

@@ -7,14 +7,25 @@ const PERIODS = [
   { key: 'weekly', label: 'Weekly', icon: '🗓️' },
 ];
 
+function pad(n) {
+  return String(n).padStart(2, '0');
+}
+
+// Local calendar date as 'YYYY-MM-DD'. Deliberately NOT toISOString(),
+// which reports the UTC date and drifts a day off from local "today" for
+// timezones ahead of or behind UTC (e.g. IST) for part of the day.
+function toDateStr(d) {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 function todayStr() {
-  return new Date().toISOString().split('T')[0];
+  return toDateStr(new Date());
 }
 
 function addDays(dateStr, n) {
   const d = new Date(dateStr + 'T00:00:00');
   d.setDate(d.getDate() + n);
-  return d.toISOString().split('T')[0];
+  return toDateStr(d);
 }
 
 function formatDay(dateStr) {

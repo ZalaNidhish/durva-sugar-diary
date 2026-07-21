@@ -4,6 +4,34 @@ const Entry = require('../models/Entry');
 const asyncHandler = require('../middleware/asyncHandler');
 const validateEntry = require('../middleware/validateEntry');
 const { updateDailySummary } = require('../utils/dailySummary');
+const { getDailyAnalysis, getWeeklyAnalysis } = require('../utils/analysis');
+
+// GET /api/entries/analysis/daily/:date - every reading for one calendar day
+router.get(
+  '/analysis/daily/:date',
+  asyncHandler(async (req, res) => {
+    const { date } = req.params;
+    if (isNaN(new Date(date).getTime())) {
+      return res.status(400).json({ success: false, errors: ['Invalid date format'] });
+    }
+    const result = await getDailyAnalysis(date);
+    res.json({ success: true, period: 'daily', ...result });
+  })
+);
+
+// GET /api/entries/analysis/weekly/:date - avg per day for the Mon-Sun week
+// that contains :date (any date inside the desired week works)
+router.get(
+  '/analysis/weekly/:date',
+  asyncHandler(async (req, res) => {
+    const { date } = req.params;
+    if (isNaN(new Date(date).getTime())) {
+      return res.status(400).json({ success: false, errors: ['Invalid date format'] });
+    }
+    const result = await getWeeklyAnalysis(date);
+    res.json({ success: true, period: 'weekly', ...result });
+  })
+);
 
 // GET /api/entries - all entries, newest day first
 router.get(

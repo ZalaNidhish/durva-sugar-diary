@@ -74,6 +74,43 @@ router.get(
   })
 );
 
+// GET /api/entries/range?start=YYYY-MM-DD&end=YYYY-MM-DD - all entries
+// within an inclusive date range, oldest day first (used for exports).
+router.get(
+  '/range',
+  asyncHandler(async (req, res) => {
+    const { start, end } = req.query;
+
+    if (!start || !end) {
+      return res
+        .status(400)
+        .json({ success: false, errors: ['Both start and end dates are required'] });
+    }
+
+    const startDate = new Date(start);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(end);
+    endDate.setHours(23, 59, 59, 999);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return res.status(400).json({ success: false, errors: ['Invalid date format'] });
+    }
+
+    if (startDate > endDate) {
+      return res
+        .status(400)
+        .json({ success: false, errors: ['Start date must be before end date'] });
+    }
+
+    const entries = await Entry.find({ date: { $gte: startDate, $lte: endDate } }).sort({
+      date: 1,
+      time: 1,
+    });
+
+    res.json({ success: true, data: entries });
+  })
+);
+
 // GET /api/entries/:id - single entry
 router.get(
   '/:id',
@@ -96,6 +133,8 @@ router.post(
     res.status(201).json({ success: true, data: entry });
   })
 );
+
+
 
 // PUT /api/entries/:id - update
 router.put(

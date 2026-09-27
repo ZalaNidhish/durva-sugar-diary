@@ -4,6 +4,7 @@ import AddEntryModal from './components/AddEntryModal';
 import AnalysisModal from './components/AnalysisModal';
 import { getEntriesByDate, createEntry, updateEntry, deleteEntry } from './api/entryApi';
 import './App.css';
+import ExportModal from './components/ExportModal';
 
 function todayStr() {
   return new Date().toISOString().split('T')[0];
@@ -26,6 +27,8 @@ export default function App() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showExport, setShowExport] = useState(false);
+
 
   const loadEntries = useCallback(async () => {
     setLoading(true);
@@ -78,11 +81,14 @@ export default function App() {
           />
         </label>
         <div className="controls-buttons">
+          <button className="btn-analysis" onClick={() => setShowExport(true)}>
+            ⬇️
+          </button>
           <button className="btn-analysis" onClick={() => setShowAnalysis(true)}>
-            📊 Analysis
+            📊
           </button>
           <button className="btn-add" onClick={() => setShowAddModal(true)}>
-            + Add reading
+            Add
           </button>
         </div>
       </div>
@@ -120,6 +126,8 @@ export default function App() {
       {showAddModal && (
         <AddEntryModal onClose={() => setShowAddModal(false)} onAdd={handleAdd} />
       )}
+
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
 
       {showAnalysis && <AnalysisModal onClose={() => setShowAnalysis(false)} />}
     </div>

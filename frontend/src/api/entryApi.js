@@ -52,3 +52,12 @@ export async function getWeeklyAnalysis(dateStr) {
   const res = await fetch(`${API_URL}/analysis/weekly/${dateStr}`);
   return handleResponse(res);
 }
+
+// startStr/endStr are 'YYYY-MM-DD', inclusive. Returns every reading in
+// that range, oldest first. Used for the Excel export.
+export async function getEntriesByRange(startStr, endStr) {
+  const res = await fetch(
+    `${API_URL}/range?start=${startStr}&end=${endStr}`
+  );
+  return handleResponse(res);
+}
